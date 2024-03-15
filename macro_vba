@@ -1,0 +1,37 @@
+Sub ExportarParaCSV()
+    Dim ws As Worksheet
+    Dim dados As Range
+    Dim linha As Range
+    Dim texto As String
+    Dim arquivo As Object
+    Dim caminho As String
+    
+    ' Definir a planilha atual
+    Set ws = ThisWorkbook.ActiveSheet
+    
+    ' Definir o intervalo de dados a serem exportados (excluindo cabeçalhos)
+    Set dados = ws.UsedRange.Offset(1).Resize(ws.UsedRange.Rows.Count - 1)
+    
+    ' Caminho para a área de trabalho
+    caminho = Environ("USERPROFILE") & "\Desktop\dados.csv"
+    
+    ' Cria o arquivo de texto separado por ponto e vírgula
+    Set arquivo = CreateObject("Scripting.FileSystemObject").CreateTextFile(caminho, True)
+    
+    ' Loop pelas linhas de dados
+    For Each linha In dados.Rows
+        texto = ""
+        ' Loop pelas células de cada linha
+        For Each celula In linha.Cells
+            ' Adiciona o valor da célula ao texto, separado por ponto e vírgula
+            texto = texto & celula.Value & ";"
+        Next celula
+        ' Escreve a linha de texto no arquivo
+        arquivo.WriteLine Left(texto, Len(texto) - 1)
+    Next linha
+    
+    arquivo.Close
+    
+    MsgBox "Dados exportados com sucesso!"
+End Sub
+
